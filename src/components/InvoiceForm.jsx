@@ -31,7 +31,7 @@ export default function InvoiceForm({
   
   // Table rows
   const [items, setItems] = useState([
-    { particular: "", hsnSac: "", amount: "" }
+    { particular: "", hsnSac: "9985", amount: "" }
   ]);
 
   // Calculations states
@@ -89,7 +89,7 @@ export default function InvoiceForm({
       setSelectedCustomerId(defaultCust.id);
       
       setIgstRate(settings.defaultIgstRate !== undefined ? settings.defaultIgstRate : 0);
-      setItems([{ particular: "", hsnSac: "", amount: "" }]);
+      setItems([{ particular: "", hsnSac: "9985", amount: "" }]);
     }
   }, [initialInvoice, nextInvoiceNumber, settings, isEditMode]);
 
@@ -159,13 +159,13 @@ export default function InvoiceForm({
   };
 
   const handleAddItem = () => {
-    setItems([...items, { particular: "", hsnSac: "", amount: "" }]);
+    setItems([...items, { particular: "", hsnSac: "9985", amount: "" }]);
   };
 
   const handleRemoveItem = (index) => {
     if (items.length === 1) {
       // Reset the single item instead of removing
-      setItems([{ particular: "", hsnSac: "", amount: "" }]);
+      setItems([{ particular: "", hsnSac: "9985", amount: "" }]);
       return;
     }
     setItems(items.filter((_, i) => i !== index));
