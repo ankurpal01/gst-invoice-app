@@ -53,15 +53,27 @@ export default function App() {
     },
   ];
 
-  // Load state from localStorage
+  // Load state from localStorage with initialization flags
   const [settings, setSettings] = useState(() => {
+    const initialized = localStorage.getItem("gst_settings_initialized") === "true";
+    if (!initialized) {
+      localStorage.setItem("gst_settings_initialized", "true");
+      localStorage.setItem("gst_invoice_settings", JSON.stringify(defaultSettings));
+      return defaultSettings;
+    }
     const saved = localStorage.getItem("gst_invoice_settings");
     return saved ? JSON.parse(saved) : defaultSettings;
   });
 
   const [invoices, setInvoices] = useState(() => {
+    const initialized = localStorage.getItem("gst_invoices_initialized") === "true";
+    if (!initialized) {
+      localStorage.setItem("gst_invoices_initialized", "true");
+      localStorage.setItem("gst_invoices", JSON.stringify(defaultInvoices));
+      return defaultInvoices;
+    }
     const saved = localStorage.getItem("gst_invoices");
-    return saved ? JSON.parse(saved) : defaultInvoices;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [adminPassword, setAdminPassword] = useState(() => {
