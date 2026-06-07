@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", "Inter", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 font-sans antialiased min-h-screen selection:bg-teal-500/30 selection:text-teal-200;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(29, 59, 108, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(0, 130, 138, 0.1) 0%, transparent 40%);
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-slate-900/60 backdrop-blur-md border border-slate-800/80 shadow-xl shadow-slate-950/20;
+  }
+  
+  .glass-card {
+    @apply bg-slate-900/40 backdrop-blur-sm border border-slate-800/50 hover:border-slate-700/80 transition-all duration-300;
+  }
+  
+  .text-glow-primary {
+    text-shadow: 0 0 12px rgba(20, 184, 166, 0.2);
+  }
+
+  /* Custom scrollbar for seamless premium feel */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-950;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
+  }
+}
+
+/* Page transitons or keyframe animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+#root {
+  width: 100%;
+  margin: 0;
+  text-align: left;
+  border-inline: none;
+  min-height: 100vh;
+}
