@@ -65,7 +65,7 @@ export default function App() {
   });
 
   const [adminPassword, setAdminPassword] = useState(() => {
-    return localStorage.getItem("admin_password") || "1234";
+    return localStorage.getItem("admin_password") || "Joshi@123";
   });
 
   const [isAuthorized, setIsAuthorized] = useState(() => {
@@ -173,7 +173,6 @@ export default function App() {
       <LoginGate
         onAuthorize={() => setIsAuthorized(true)}
         adminPassword={adminPassword}
-        supplierPhone={settings.supplierPhone}
       />
     );
   }
