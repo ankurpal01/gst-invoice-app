@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Save, Upload, Trash2, Building, Landmark, Percent, Image } from "lucide-react";
+import { Save, Upload, Trash2, Building, Landmark, Percent, Image, Lock } from "lucide-react";
 
 function cleanSignatureImage(dataUrl, callback) {
   const img = new Image();
@@ -57,9 +57,51 @@ function cleanSignatureImage(dataUrl, callback) {
   };
 }
 
-export default function Settings({ settings, onSaveSettings }) {
+export default function Settings({ settings, onSaveSettings, adminPassword, onChangePassword }) {
   const [formData, setFormData] = useState({ ...settings });
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // Password Update states
+  const [currentPassInput, setCurrentPassInput] = useState("");
+  const [newPassInput, setNewPassInput] = useState("");
+  const [confirmNewPassInput, setConfirmNewPassInput] = useState("");
+  const [passMessage, setPassMessage] = useState("");
+  const [passMessageType, setPassMessageType] = useState("");
+
+  const handlePasswordUpdate = () => {
+    // If password is already set, require correct current password
+    if (adminPassword && currentPassInput !== adminPassword) {
+      setPassMessageType("error");
+      setPassMessage("Incorrect current password.");
+      return;
+    }
+
+    if (!newPassInput) {
+      setPassMessageType("error");
+      setPassMessage("New password cannot be empty.");
+      return;
+    }
+
+    if (newPassInput !== confirmNewPassInput) {
+      setPassMessageType("error");
+      setPassMessage("New passwords do not match.");
+      return;
+    }
+
+    // Save password
+    onChangePassword(newPassInput);
+    setPassMessageType("success");
+    setPassMessage("Password updated successfully!");
+    
+    // Clear inputs
+    setCurrentPassInput("");
+    setNewPassInput("");
+    setConfirmNewPassInput("");
+    
+    setTimeout(() => {
+      setPassMessage("");
+    }, 4000);
+  };
 
   const handleTextChange = (e) => {
     const { name, value } = e.target;
@@ -365,6 +407,67 @@ export default function Settings({ settings, onSaveSettings }) {
                   />
                 </label>
               )}
+            </div>
+
+            {/* SECURITY SETTINGS */}
+            <div className="glass-panel p-6 rounded-2xl border border-slate-800/80 space-y-4">
+              <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+                <Lock className="text-teal-400 h-4.5 w-4.5" />
+                Security (Access Lock)
+              </h2>
+              
+              <div className="space-y-3">
+                {adminPassword && (
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-slate-400 font-medium">Current Password</label>
+                    <input
+                      type="password"
+                      value={currentPassInput}
+                      onChange={(e) => setCurrentPassInput(e.target.value)}
+                      placeholder="Enter current password"
+                      className="bg-slate-950 border border-slate-850 focus:border-teal-500 rounded-xl px-3.5 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-teal-500/30"
+                    />
+                  </div>
+                )}
+                
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-slate-400 font-medium">
+                    {adminPassword ? "New Password" : "Set Access Password"}
+                  </label>
+                  <input
+                    type="password"
+                    value={newPassInput}
+                    onChange={(e) => setNewPassInput(e.target.value)}
+                    placeholder="Enter new password"
+                    className="bg-slate-950 border border-slate-850 focus:border-teal-500 rounded-xl px-3.5 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-teal-500/30"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-slate-400 font-medium">Confirm Password</label>
+                  <input
+                    type="password"
+                    value={confirmNewPassInput}
+                    onChange={(e) => setConfirmNewPassInput(e.target.value)}
+                    placeholder="Confirm new password"
+                    className="bg-slate-950 border border-slate-850 focus:border-teal-500 rounded-xl px-3.5 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-teal-500/30"
+                  />
+                </div>
+
+                {passMessage && (
+                  <p className={`text-xs font-semibold ${passMessageType === "success" ? "text-teal-400" : "text-rose-400"}`}>
+                    {passMessage}
+                  </p>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handlePasswordUpdate}
+                  className="w-full py-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                >
+                  {adminPassword ? "Change Password" : "Enable Access Lock"}
+                </button>
+              </div>
             </div>
 
           </div>

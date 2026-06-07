@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { LayoutDashboard, FileSpreadsheet, PlusCircle, Settings as SettingsIcon, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, FileSpreadsheet, PlusCircle, Settings as SettingsIcon, ShieldCheck, Lock } from "lucide-react";
 import Dashboard from "./components/Dashboard";
 import InvoiceForm from "./components/InvoiceForm";
 import InvoiceHistory from "./components/InvoiceHistory";
 import Settings from "./components/Settings";
+import LoginGate from "./components/LoginGate";
 import { generateInvoicePDF } from "./utils/pdfGenerator";
 
 export default function App() {
@@ -62,6 +63,19 @@ export default function App() {
     const saved = localStorage.getItem("gst_invoices");
     return saved ? JSON.parse(saved) : defaultInvoices;
   });
+
+  const [adminPassword, setAdminPassword] = useState(() => {
+    return localStorage.getItem("admin_password") || "1234";
+  });
+
+  const [isAuthorized, setIsAuthorized] = useState(() => {
+    return localStorage.getItem("portfolio_authorized") === "true";
+  });
+
+  const handlePasswordChange = (newPassword) => {
+    localStorage.setItem("admin_password", newPassword);
+    setAdminPassword(newPassword);
+  };
 
   // Sync state to localStorage
   useEffect(() => {
@@ -154,6 +168,16 @@ export default function App() {
     return editingInvoice;
   };
 
+  if (!isAuthorized) {
+    return (
+      <LoginGate
+        onAuthorize={() => setIsAuthorized(true)}
+        adminPassword={adminPassword}
+        supplierPhone={settings.supplierPhone}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
       
@@ -236,6 +260,17 @@ export default function App() {
               <SettingsIcon size={18} />
               Settings
             </button>
+
+            <button
+              onClick={() => {
+                localStorage.removeItem("portfolio_authorized");
+                setIsAuthorized(false);
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer text-rose-400 hover:text-rose-200 hover:bg-rose-950/20 border border-dashed border-rose-900/30 mt-6"
+            >
+              <Lock size={18} />
+              Lock Application
+            </button>
           </nav>
         </div>
 
@@ -284,7 +319,12 @@ export default function App() {
           )}
 
           {activeTab === "settings" && (
-            <Settings settings={settings} onSaveSettings={handleSaveSettings} />
+            <Settings 
+              settings={settings} 
+              onSaveSettings={handleSaveSettings} 
+              adminPassword={adminPassword}
+              onChangePassword={handlePasswordChange}
+            />
           )}
         </div>
       </main>
