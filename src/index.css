@@ -2,28 +2,50 @@
 
 @theme {
   --font-sans: "Outfit", "Inter", sans-serif;
+
+  /* Redefining slate colors to invert dark mode into a premium light mode */
+  --color-slate-950: #f8fafc; /* Page Background (Slate 50) */
+  --color-slate-900: #ffffff; /* Card / Panel Background (White) */
+  --color-slate-850: #f1f5f9; /* Inputs / Tables background (Slate 100) */
+  --color-slate-800: #e2e8f0; /* Default Borders (Slate 200) */
+  --color-slate-700: #cbd5e1; /* Secondary Borders (Slate 300) */
+  --color-slate-600: #94a3b8; /* Placeholders (Slate 400) */
+  
+  --color-slate-500: #64748b; /* Secondary Icons (Slate 500) */
+  --color-slate-450: #475569; /* Table header label text (Slate 600) */
+  --color-slate-400: #334155; /* Secondary text (Slate 700) */
+  --color-slate-300: #1e293b; /* Primary body text (Slate 800) */
+  --color-slate-200: #0f172a; /* Heavy text / Headings (Slate 900) */
+  --color-slate-100: #020617; /* Near black text (Slate 950) */
+  --color-slate-50: #020617;
+
+  /* Boosting Teal/Cyan color contrasts for high readability on white backgrounds */
+  --color-teal-400: #0d9488; /* Teal 600 */
+  --color-teal-500: #0f766e; /* Teal 700 */
+  --color-cyan-400: #0891b2; /* Cyan 600 */
+  --color-cyan-500: #0369a1; /* Cyan 700 */
 }
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 font-sans antialiased min-h-screen selection:bg-teal-500/30 selection:text-teal-200;
+    @apply bg-slate-950 text-slate-300 font-sans antialiased min-h-screen selection:bg-teal-500/10 selection:text-teal-900;
     background-image: 
-      radial-gradient(circle at 10% 20%, rgba(29, 59, 108, 0.15) 0%, transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(0, 130, 138, 0.1) 0%, transparent 40%);
+      radial-gradient(circle at 10% 20%, rgba(13, 148, 136, 0.03) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(8, 145, 178, 0.02) 0%, transparent 40%);
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-slate-900/60 backdrop-blur-md border border-slate-800/80 shadow-xl shadow-slate-950/20;
+    @apply bg-white/95 border border-slate-800/20 shadow-xl shadow-slate-200/50;
   }
   
   .glass-card {
-    @apply bg-slate-900/40 backdrop-blur-sm border border-slate-800/50 hover:border-slate-700/80 transition-all duration-300;
+    @apply bg-white/70 border border-slate-800/10 hover:border-slate-800/30 hover:bg-white transition-all duration-300;
   }
   
   .text-glow-primary {
-    text-shadow: 0 0 12px rgba(20, 184, 166, 0.2);
+    text-shadow: 0 0 12px rgba(13, 148, 136, 0.1);
   }
 
   /* Custom scrollbar for seamless premium feel */
@@ -39,7 +61,29 @@
   }
 }
 
-/* Page transitons or keyframe animations */
+/* Force dark text on specific solid elements to prevent low contrast */
+.text-white {
+  color: #0f172a !important;
+}
+
+/* Force dark text inside forms and select option elements */
+input::placeholder, textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Ensure buttons with solid layouts have correct contrast text */
+button.bg-gradient-to-r, 
+button.bg-teal-500, 
+button.bg-teal-500\/10 {
+  color: #0f172a !important;
+}
+
+/* Page transitions or keyframe animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
