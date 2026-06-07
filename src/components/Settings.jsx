@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Save, Upload, Trash2, Building, Landmark, Percent, Image, Lock } from "lucide-react";
+import { Save, Upload, Trash2, Building, Landmark, Percent, Image, Lock, Database, Download } from "lucide-react";
 
 function cleanSignatureImage(dataUrl, callback) {
   const img = new Image();
@@ -57,7 +57,7 @@ function cleanSignatureImage(dataUrl, callback) {
   };
 }
 
-export default function Settings({ settings, onSaveSettings, adminPassword, onChangePassword }) {
+export default function Settings({ settings, onSaveSettings, adminPassword, onChangePassword, onExportBackup, onImportBackup }) {
   const [formData, setFormData] = useState({ ...settings });
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -466,6 +466,39 @@ export default function Settings({ settings, onSaveSettings, adminPassword, onCh
                   className="w-full py-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold rounded-xl text-xs transition-colors cursor-pointer"
                 >
                   {adminPassword ? "Change Password" : "Enable Access Lock"}
+                </button>
+              </div>
+            </div>
+
+            {/* DATA BACKUP & RESTORE */}
+            <div className="glass-panel p-6 rounded-2xl border border-slate-800/80 space-y-4">
+              <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+                <Database className="text-teal-400 h-4.5 w-4.5" />
+                Backup & Restore
+              </h2>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Save your invoice history, logo, signature, and settings into a backup file. You can upload this file on any other system to access your data instantly.
+              </p>
+              
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <label className="flex items-center justify-center gap-2 py-2.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-all cursor-pointer text-center">
+                  <Upload size={14} className="text-teal-400" />
+                  <span>Import Data</span>
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={onImportBackup}
+                    className="hidden"
+                  />
+                </label>
+                
+                <button
+                  type="button"
+                  onClick={onExportBackup}
+                  className="flex items-center justify-center gap-2 py-2.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-all cursor-pointer"
+                >
+                  <Download size={14} className="text-teal-400" />
+                  <span>Export Backup</span>
                 </button>
               </div>
             </div>

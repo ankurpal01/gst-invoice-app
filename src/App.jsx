@@ -140,6 +140,54 @@ export default function App() {
     setSettings(updatedSettings);
   };
 
+  const handleExportBackup = () => {
+    const data = {
+      settings,
+      invoices,
+      adminPassword
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `gst_invoice_hub_backup_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportBackup = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const data = JSON.parse(event.target.result);
+        if (!data.settings || !data.invoices) {
+          alert("Invalid backup file format. Make sure it is a valid backup JSON.");
+          return;
+        }
+
+        // Save to localStorage
+        localStorage.setItem("gst_invoice_settings", JSON.stringify(data.settings));
+        localStorage.setItem("gst_invoices", JSON.stringify(data.invoices));
+        if (data.adminPassword) {
+          localStorage.setItem("admin_password", data.adminPassword);
+        }
+        localStorage.setItem("gst_settings_initialized", "true");
+        localStorage.setItem("gst_invoices_initialized", "true");
+
+        alert("Backup restored successfully! The page will now reload.");
+        window.location.reload();
+      } catch (err) {
+        alert("Failed to parse backup file: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const handleDownloadPDF = (invoice) => {
     try {
       const pdf = generateInvoicePDF(invoice, settings);
@@ -335,6 +383,8 @@ export default function App() {
               onSaveSettings={handleSaveSettings} 
               adminPassword={adminPassword}
               onChangePassword={handlePasswordChange}
+              onExportBackup={handleExportBackup}
+              onImportBackup={handleImportBackup}
             />
           )}
         </div>
